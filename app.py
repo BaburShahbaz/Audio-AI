@@ -33,6 +33,7 @@ from sklearn.preprocessing import StandardScaler
 import pandas as pd
 from PIL import Image, ImageDraw, ImageFont
 import warnings
+import soundfile as sf  # ADD THIS for audio conversion
 warnings.filterwarnings('ignore')
 
 # ==========================================
@@ -523,10 +524,10 @@ def extract_wav2vec_features(y, sr, w2v_processor, w2v_model, device):
     
     return embeddings[0]  # 768 dimensions
 
-def extract_semantic_features(audio, y, sr, whisper_model, sem_tokenizer, sem_model, device):
+def extract_semantic_features(audio_bytes, whisper_model, sem_tokenizer, sem_model, device):
     """Extract 768-dim semantic features from transcript"""
-    # Transcribe audio
-    result = whisper_model.transcribe(audio)
+    # Transcribe audio using bytes
+    result = whisper_model.transcribe(audio_bytes)
     transcript = result['text'].strip()
     
     if not transcript:
@@ -575,8 +576,10 @@ def perform_emotion_analysis(audio_bytes, models, is_live=False):
         models['w2v_model'], 
         models['device']
     )
+    
+    # FIX: Pass audio_bytes (not y) to extract_semantic_features for Whisper
     sem_features, transcript = extract_semantic_features(
-        audio_bytes, y, sr,
+        audio_bytes,  # Use original bytes for Whisper
         models['whisper'],
         models['sem_tokenizer'],
         models['sem_model'],
