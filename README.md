@@ -324,7 +324,3 @@ This project is for academic research purposes.
 <p align="center">
   Made with ❤️ for emotion AI research
 </p>
-
-
-# Audio-AI
-Real-time Multimodal Emotion Recognition using Acoustic, Wav2Vec2 and Semantic AI
